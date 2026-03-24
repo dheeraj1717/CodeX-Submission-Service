@@ -1,7 +1,5 @@
-const fastifyPlugin = require("fastify-plugin");
-
 function apiPlugin(fastify, options){
-    fastify.register(require("../test/testRoutes"), { prefix: "/test" });
+    fastify.register(require("../v1/v1Routes"), { prefix: "/v1" });
 }
 
-module.exports = fastifyPlugin(apiPlugin);
+module.exports = apiPlugin;
