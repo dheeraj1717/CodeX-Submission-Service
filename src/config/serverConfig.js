@@ -8,6 +8,7 @@ const REDIS_HOST = process.env.REDIS_HOST || "[IP_ADDRESS]";
 const LOG_DB_URI = process.env.LOG_DB_URI || "";
 const NODE_ENV = process.env.NODE_ENV || "development";
 const ATLAS_URI = process.env.ATLAS_URI || "";
+const PROBLEM_ADMIN_SERVICE_URL = process.env.PROBLEM_ADMIN_SERVICE_URL || "http://localhost:4000";
 
 module.exports = {
     PORT,
@@ -15,5 +16,6 @@ module.exports = {
     REDIS_HOST,
     LOG_DB_URI,
     NODE_ENV,
-    ATLAS_URI
+    ATLAS_URI,
+    PROBLEM_ADMIN_SERVICE_URL
 };
