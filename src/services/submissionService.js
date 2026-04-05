@@ -11,7 +11,9 @@ class SubmissionService {
   async addSubmission(submissionPayload) {
     // hit the problem admin service to get the problem details
     const problemId = submissionPayload.problemId;
+    const userId = submissionPayload.userId;
     const problemAdminApiResponse = await fetchProblemDetails(problemId);
+    console.log("Problem Admin API Response",problemAdminApiResponse);
     if (!problemAdminApiResponse.success) {
       throw new Error(problemAdminApiResponse.message);
     }
@@ -35,15 +37,21 @@ class SubmissionService {
     const submission =
       await this.submissionRepository.createSubmission(submissionPayload);
     if (!submission) {
-      throw new Error("Failed to create submission");
+      console.log("Failed to create submission");
     }
-    console.log(submission);
+    console.log("submission created successfully",submission);
+    console.log("code",submission.code);
+    console.log("language",submission.language);
+    console.log("inputCase",problemAdminApiResponse.data.testCases[0].input);
+    console.log("outputCase",problemAdminApiResponse.data.testCases[0].output);
     const response = await submissionQueueProducer({
       [submission._id]: {
-        code: submission.code,
-        language: submission.language,
-        inputCase: problemAdminApiResponse.data.testCases[0].input,
-        outputCase: problemAdminApiResponse.data.testCases[0].output,
+      code: submission.code,
+      language: submission.language,
+      inputCase: problemAdminApiResponse.data.testCases[0].input,
+      outputCase: problemAdminApiResponse.data.testCases[0].output,
+      userId: userId,
+      submissionId: submission._id,
       },
     });
     return { queueResponse: response, submission: submission };

@@ -8,6 +8,11 @@ class SubmissionRepository {
         const response = await this.submissionModel.create(submission);
         return response;
     }
+
+    async updateSubmission(submissionId, submission){
+        const response = await this.submissionModel.findByIdAndUpdate(submissionId, submission, {new: true});
+        return response;
+    }
 }
 
 module.exports = SubmissionRepository;
