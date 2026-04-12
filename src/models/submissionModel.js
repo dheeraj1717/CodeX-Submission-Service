@@ -30,7 +30,14 @@ const submissionSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    testCaseResults: [{
+        input: String,
+        output: String,
+        expected: String,
+        status: String,
+        error: String
+    }]
 });
 
 const Submission = mongoose.model("Submission", submissionSchema);
