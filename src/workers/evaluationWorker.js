@@ -5,11 +5,13 @@ const SubmissionRepository = require("../repository/submissionRepository");
 
 const submissionRepository = new SubmissionRepository();
 
+const logger = require("../config/loggerConfig");
+
 function evaluationWorker(queueName){
-    console.log("Worker started for queue", queueName);
+    logger.info(`Worker started for queue: ${queueName}`);
     const worker = new Worker(queueName, async (job) => {
         if(job.name === "EvaluationJob" || job.name === "EvaluationResultJob"){
-            console.log("Job received", job.data);
+            logger.info({ message: `Job received: ${job.id}`, data: job.data });
             try {
                 // Update submission status in db
                 // Compute overall status based on test case results
@@ -28,7 +30,7 @@ function evaluationWorker(queueName){
                     status: finalStatus,
                     testCaseResults: job.data.testCaseResults 
                 });
-                console.log("Submission updated successfully", submission);
+                logger.debug(`Submission ${job.data.submissionId} updated successfully: ${finalStatus}`);
 
                 // Notify frontend via socket service
                 const response = await axios.post("http://localhost:4005/sendPayload", {
@@ -38,9 +40,9 @@ function evaluationWorker(queueName){
                         status: finalStatus // Send the aggregate status
                     }
                 });
-                console.log("Response", response.data);
+                logger.info(`Notification sent for submission ${job.data.submissionId}: ${response.data.message || 'success'}`);
             } catch (error) {
-                console.error("Error processing job:", error.message);
+                logger.error(`Error processing job ${job.id}: ${error.message}`);
             }
         }
     },{

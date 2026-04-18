@@ -4,7 +4,7 @@ const connectDB = require("./config/dbConfig");
 
 const { PORT } = require("./config/serverConfig");
 const { EVALUATION_QUEUE } = require("./utils/constant");
-const evaluationWorker = require("./workers/evaluationWorker");
+const logger = require("./config/loggerConfig");
 
 fastify.register(app);
 
@@ -13,9 +13,9 @@ async function startServer() {
         await fastify.listen({ port: PORT });
         await connectDB();
         evaluationWorker(EVALUATION_QUEUE);
-        console.log(`Server listening on ${PORT}`);
+        logger.info(`Server listening on ${PORT}`);
     } catch (err) {
-        fastify.log.error(err);
+        logger.error(`Error starting server: ${err.message}`);
         process.exit(1);
     }
 }
